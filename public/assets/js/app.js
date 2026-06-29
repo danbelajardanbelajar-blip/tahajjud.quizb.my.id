@@ -35,7 +35,68 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
     }
+    /* =====================
+       SETTINGS MODAL & FONTS
+    ===================== */
+    const btnSettings = document.getElementById('settingsToggle');
+    const settingsModal = document.getElementById('settingsModal');
+    const settingsClose = document.getElementById('settingsClose');
+    const btnFontMinus = document.getElementById('btn-font-minus');
+    const btnFontPlus = document.getElementById('btn-font-plus');
+    const fontScaleDisplay = document.getElementById('font-scale-display');
+    const selectFontArab = document.getElementById('select-font-arab');
+    const selectFontLatin = document.getElementById('select-font-latin');
+    const root = document.documentElement;
 
+    let fontScale = parseFloat(localStorage.getItem('fontScale')) || 1;
+    let fontArab = localStorage.getItem('fontArab') || "'Amiri', serif";
+    let fontLatin = localStorage.getItem('fontLatin') || "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
+    function updateFontSettings() {
+        root.style.setProperty('--font-scale', fontScale);
+        root.style.setProperty('--font-arab', fontArab);
+        root.style.setProperty('--font-latin', fontLatin);
+        fontScaleDisplay.textContent = Math.round(fontScale * 100) + '%';
+        selectFontArab.value = fontArab;
+        selectFontLatin.value = fontLatin;
+    }
+    updateFontSettings();
+
+    if(btnSettings && settingsModal) {
+        btnSettings.onclick = () => settingsModal.classList.add('active');
+        settingsClose.onclick = () => settingsModal.classList.remove('active');
+        settingsModal.onclick = (e) => {
+            if(e.target === settingsModal) settingsModal.classList.remove('active');
+        }
+
+        btnFontMinus.onclick = () => {
+            if(fontScale > 0.6) {
+                fontScale -= 0.1;
+                localStorage.setItem('fontScale', fontScale);
+                updateFontSettings();
+            }
+        };
+
+        btnFontPlus.onclick = () => {
+            if(fontScale < 2.0) {
+                fontScale += 0.1;
+                localStorage.setItem('fontScale', fontScale);
+                updateFontSettings();
+            }
+        };
+
+        selectFontArab.onchange = (e) => {
+            fontArab = e.target.value;
+            localStorage.setItem('fontArab', fontArab);
+            updateFontSettings();
+        };
+
+        selectFontLatin.onchange = (e) => {
+            fontLatin = e.target.value;
+            localStorage.setItem('fontLatin', fontLatin);
+            updateFontSettings();
+        };
+    }
     /* =====================
        SPA ROUTING (History API)
     ===================== */
