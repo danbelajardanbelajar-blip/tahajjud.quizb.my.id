@@ -30,3 +30,9 @@
 <div id="dashboard-doa-list">
     <p style="color: var(--muted)">Memuat data...</p>
 </div>
+
+<div class="pagination" id="pagination-controls" style="display: none;">
+    <button class="btn btn-secondary" id="btn-prev-page">⬅️ Prev</button>
+    <span id="page-info" style="margin: 0 15px; font-weight: bold;">Halaman 1 / 1</span>
+    <button class="btn btn-secondary" id="btn-next-page">Next ➡️</button>
+</div>

@@ -59,6 +59,25 @@ class ApiController extends Controller {
         }
     }
 
+    public function reorder() {
+        $this->checkAuth();
+        $this->verifyCsrf();
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (!$input) {
+            $input = $_POST;
+        }
+
+        $order = $input['order'] ?? [];
+
+        try {
+            $this->model->reorderData($order);
+            $this->json(['success' => true]);
+        } catch (\Exception $e) {
+            $this->json(['success' => false, 'error' => $e->getMessage()], 400);
+        }
+    }
+
     public function delete($id) {
         $this->checkAuth();
         $this->verifyCsrf();

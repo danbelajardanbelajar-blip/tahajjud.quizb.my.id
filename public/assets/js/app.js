@@ -139,42 +139,108 @@ document.addEventListener('DOMContentLoaded', () => {
        DASHBOARD
     ===================== */
     let currentData = [];
+    let currentPage = 1;
+    const itemsPerPage = 10;
 
     async function loadDashboardData() {
-        const list = document.getElementById('dashboard-doa-list');
         const countSpan = document.getElementById('doa-count');
-        if(!list) return;
+        if(!document.getElementById('dashboard-doa-list')) return;
 
         try {
             const res = await fetch('/api/doa');
             currentData = await res.json();
             countSpan.textContent = currentData.length;
+            currentPage = 1;
+            renderDashboardPage();
+        } catch(e) {
+            document.getElementById('dashboard-doa-list').innerHTML = '<p style="color:red;">Gagal memuat data.</p>';
+        }
+    }
 
-            if(currentData.length === 0) {
-                list.innerHTML = '<p style="color: var(--muted)">Belum ada data doa. Silakan tambah melalui form.</p>';
-                return;
-            }
+    function renderDashboardPage() {
+        const list = document.getElementById('dashboard-doa-list');
+        const paginationControls = document.getElementById('pagination-controls');
+        const btnPrev = document.getElementById('btn-prev-page');
+        const btnNext = document.getElementById('btn-next-page');
+        const pageInfo = document.getElementById('page-info');
 
-            let html = '';
-            currentData.forEach((item, index) => {
-                html += `
-                <div class="doa-item">
-                    <div class="doa-content">
-                        <div class="doa-id">#Doa Ke-${index + 1}</div>
-                        <div class="doa-arab">${item.arab}</div>
-                        <div class="doa-trans">${item.terjemah}</div>
+        if(currentData.length === 0) {
+            list.innerHTML = '<p style="color: var(--muted)">Belum ada data doa. Silakan tambah melalui form.</p>';
+            paginationControls.style.display = 'none';
+            return;
+        }
+
+        const totalPages = Math.ceil(currentData.length / itemsPerPage);
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const pageData = currentData.slice(startIndex, startIndex + itemsPerPage);
+
+        let html = '';
+        pageData.forEach((item, index) => {
+            const globalIndex = startIndex + index;
+            html += `
+            <div class="doa-item">
+                <div class="doa-content">
+                    <div class="doa-id">#Doa Ke-${globalIndex + 1}</div>
+                    <div class="doa-arab">${item.arab}</div>
+                    <div class="doa-trans">${item.terjemah}</div>
+                </div>
+                <div class="actions" style="flex-direction: column; align-items: flex-end;">
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <button class="btn-icon" onclick="window.moveDoa(${globalIndex}, -1)" ${globalIndex === 0 ? 'disabled' : ''} title="Geser ke atas">⬆️</button>
+                        <button class="btn-icon" onclick="window.moveDoa(${globalIndex}, 1)" ${globalIndex === currentData.length - 1 ? 'disabled' : ''} title="Geser ke bawah">⬇️</button>
                     </div>
-                    <div class="actions">
+                    <div style="display:flex; gap:8px;">
                         <button class="btn btn-primary" onclick="window.editDoa('${item.id}')" style="padding: 6px 12px;">Edit</button>
                         <button class="btn btn-danger" onclick="window.deleteDoa('${item.id}')" style="padding: 6px 12px;">Hapus</button>
                     </div>
-                </div>`;
-            });
-            list.innerHTML = html;
-        } catch(e) {
-            list.innerHTML = '<p style="color:red;">Gagal memuat data.</p>';
+                </div>
+            </div>`;
+        });
+        list.innerHTML = html;
+
+        if (totalPages > 1) {
+            paginationControls.style.display = 'flex';
+            pageInfo.textContent = `Halaman ${currentPage} / ${totalPages}`;
+            btnPrev.disabled = currentPage === 1;
+            btnNext.disabled = currentPage === totalPages;
+            
+            btnPrev.onclick = () => { if(currentPage > 1) { currentPage--; renderDashboardPage(); window.scrollTo(0, 0); } };
+            btnNext.onclick = () => { if(currentPage < totalPages) { currentPage++; renderDashboardPage(); window.scrollTo(0, 0); } };
+        } else {
+            paginationControls.style.display = 'none';
         }
     }
+
+    window.moveDoa = async (index, direction) => {
+        if (index + direction < 0 || index + direction >= currentData.length) return;
+        
+        // Swap locally
+        const temp = currentData[index];
+        currentData[index] = currentData[index + direction];
+        currentData[index + direction] = temp;
+        
+        // Render optimistically
+        renderDashboardPage();
+
+        // Send to server
+        const newOrderIds = currentData.map(item => item.id);
+        try {
+            await fetch('/api/doa/reorder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF_TOKEN
+                },
+                body: JSON.stringify({ order: newOrderIds })
+            });
+        } catch(e) {
+            alert('Gagal menyimpan urutan baru ke server.');
+        }
+    };
+
 
     function initDashboardForm() {
         const form = document.getElementById('doa-form');

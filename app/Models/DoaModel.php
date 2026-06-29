@@ -125,4 +125,42 @@ class DoaModel {
             throw new \Exception("Gagal mengunci file database");
         }
     }
+
+    public function reorderData(array $newOrderIds) {
+        $fp = fopen($this->dataFile, 'c+');
+        if (flock($fp, LOCK_EX)) {
+            $filesize = filesize($this->dataFile);
+            $json = $filesize > 0 ? fread($fp, $filesize) : '[]';
+            $data = json_decode($json, true) ?? [];
+
+            $dataById = [];
+            foreach ($data as $item) {
+                $dataById[$item['id']] = $item;
+            }
+
+            $newData = [];
+            foreach ($newOrderIds as $id) {
+                if (isset($dataById[$id])) {
+                    $newData[] = $dataById[$id];
+                    unset($dataById[$id]);
+                }
+            }
+            foreach ($dataById as $item) {
+                $newData[] = $item;
+            }
+
+            copy($this->dataFile, $this->dataFile . '.bak');
+
+            ftruncate($fp, 0);
+            rewind($fp);
+            fwrite($fp, json_encode($newData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            fflush($fp);
+            flock($fp, LOCK_UN);
+            fclose($fp);
+            return true;
+        } else {
+            fclose($fp);
+            throw new \Exception("Gagal mengunci file database");
+        }
+    }
 }

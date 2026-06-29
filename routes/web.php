@@ -14,4 +14,5 @@ $router->post('/logout', [AuthController::class, 'logout']);
 $router->get('/api/doa', [ApiController::class, 'getAll']);
 $router->get('/api/doa/{id}', [ApiController::class, 'getOne']);
 $router->post('/api/doa', [ApiController::class, 'createOrUpdate']);
+$router->post('/api/doa/reorder', [ApiController::class, 'reorder']);
 $router->delete('/api/doa/{id}', [ApiController::class, 'delete']);
