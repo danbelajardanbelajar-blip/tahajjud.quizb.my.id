@@ -14,4 +14,19 @@ class HomeController extends Controller {
         }
         $this->render('dashboard');
     }
+
+    public function tracker() {
+        if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+            $this->redirect('/login');
+        }
+        
+        $dataFile = ROOT_DIR . '/data_tracker.json';
+        $visits = [];
+        if (file_exists($dataFile)) {
+            $json = file_get_contents($dataFile);
+            $visits = json_decode($json, true) ?: [];
+        }
+        
+        $this->render('tracker', ['visits' => $visits]);
+    }
 }

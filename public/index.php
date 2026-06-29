@@ -23,6 +23,9 @@ $router = new \app\Core\Router();
 // Load routes
 require_once ROOT_DIR . '/routes/web.php';
 
+// Log the visit
+\app\Core\Tracker::logVisit();
+
 // Parse URL
 $uri = $_SERVER['REQUEST_URI'];
 // Remove /public from URI if exists (in case accessed directly or via local server)

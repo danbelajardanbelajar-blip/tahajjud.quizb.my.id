@@ -9,6 +9,7 @@ $router->get('/dashboard', [HomeController::class, 'dashboard']);
 $router->get('/login', [AuthController::class, 'showLogin']);
 $router->post('/login', [AuthController::class, 'processLogin']);
 $router->post('/logout', [AuthController::class, 'logout']);
+$router->get('/tracker', [HomeController::class, 'tracker']);
 
 // API Endpoints
 $router->get('/api/doa', [ApiController::class, 'getAll']);
