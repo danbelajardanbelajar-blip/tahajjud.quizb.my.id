@@ -14,12 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const savedTheme = localStorage.getItem('theme');
         if(savedTheme === 'light'){
             body.classList.add('light');
-            btnTheme.textContent = '☀️ Terang';
+            btnTheme.textContent = '🌙 Gelap';
         }
         btnTheme.onclick = () => {
             body.classList.toggle('light');
             const isLight = body.classList.contains('light');
-            btnTheme.textContent = isLight ? '☀️ Terang' : '🌙 Gelap';
+            btnTheme.textContent = isLight ? '🌙 Gelap' : '☀️ Terang';
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
         };
     }

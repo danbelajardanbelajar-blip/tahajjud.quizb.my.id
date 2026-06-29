@@ -18,7 +18,7 @@
         <a href="/" class="btn-ctrl spa-link" id="navHome" style="display: none;">🏠 Beranda</a>
         <a href="/dashboard" class="btn-ctrl spa-link" id="navDashboard">⚙️ Dashboard</a>
         <button class="btn-ctrl" id="translateToggle"><span>👁️</span> Tampilkan Arti</button>
-        <button class="btn-ctrl" id="themeToggle">🌙 Gelap</button>
+        <button class="btn-ctrl" id="themeToggle">☀️ Terang</button>
         <?php if(isset($_SESSION['logged_in']) && $_SESSION['logged_in']): ?>
             <button class="btn-ctrl" id="btnLogout">🚪 Logout</button>
         <?php endif; ?>
