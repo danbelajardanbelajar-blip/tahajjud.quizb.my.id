@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const appContainer = document.getElementById('app-container');
     const navHome = document.getElementById('navHome');
     const navDashboard = document.getElementById('navDashboard');
+    const navTracker = document.getElementById('navTracker');
     const btnLogout = document.getElementById('btnLogout');
 
     if(btnTheme) {
@@ -117,12 +118,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if(url === '/' || url === '/tahajjud.quizb.my.id/') {
             if(navHome) navHome.style.display = 'none';
             if(navDashboard) navDashboard.style.display = 'flex';
+            if(navTracker) navTracker.style.display = 'flex';
         } else if (url.includes('/dashboard')) {
             if(navHome) navHome.style.display = 'flex';
             if(navDashboard) navDashboard.style.display = 'none';
+            if(navTracker) navTracker.style.display = 'flex';
+        } else if (url.includes('/tracker')) {
+            if(navHome) navHome.style.display = 'flex';
+            if(navDashboard) navDashboard.style.display = 'flex';
+            if(navTracker) navTracker.style.display = 'none';
         } else if (url.includes('/login')) {
             if(navHome) navHome.style.display = 'flex';
             if(navDashboard) navDashboard.style.display = 'none';
+            if(navTracker) navTracker.style.display = 'none';
         }
     }
 

@@ -19,8 +19,10 @@
 <body class="">
     <div class="controls">
         <a href="/" class="btn-ctrl spa-link" id="navHome" style="display: none;">🏠 Beranda</a>
-        <a href="/dashboard" class="btn-ctrl spa-link" id="navDashboard">⚙️ Dashboard</a>
-        <a href="/tracker" class="btn-ctrl spa-link" id="navTracker">📊 Tracker</a>
+        <?php if(isset($_SESSION['logged_in']) && $_SESSION['logged_in']): ?>
+            <a href="/dashboard" class="btn-ctrl spa-link" id="navDashboard">⚙️ Dashboard</a>
+            <a href="/tracker" class="btn-ctrl spa-link" id="navTracker">📊 Tracker</a>
+        <?php endif; ?>
         <button class="btn-ctrl" id="settingsToggle">⚙️ Pengaturan</button>
         <button class="btn-ctrl" id="translateToggle"><span>👁️</span> Tampilkan Arti</button>
         <button class="btn-ctrl" id="themeToggle">☀️ Terang</button>
