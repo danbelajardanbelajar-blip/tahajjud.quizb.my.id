@@ -13,11 +13,11 @@
         const IS_LOGGED_IN = <?php echo isset($_SESSION['logged_in']) && $_SESSION['logged_in'] ? 'true' : 'false'; ?>;
     </script>
 </head>
-<body class="show-meaning">
+<body class="">
     <div class="controls">
         <a href="/" class="btn-ctrl spa-link" id="navHome" style="display: none;">🏠 Beranda</a>
         <a href="/dashboard" class="btn-ctrl spa-link" id="navDashboard">⚙️ Dashboard</a>
-        <button class="btn-ctrl" id="translateToggle"><span>🙈</span> Sembunyi Arti</button>
+        <button class="btn-ctrl" id="translateToggle"><span>👁️</span> Tampilkan Arti</button>
         <button class="btn-ctrl" id="themeToggle">🌙 Gelap</button>
         <?php if(isset($_SESSION['logged_in']) && $_SESSION['logged_in']): ?>
             <button class="btn-ctrl" id="btnLogout">🚪 Logout</button>
