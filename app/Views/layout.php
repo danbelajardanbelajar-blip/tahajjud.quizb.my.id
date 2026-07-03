@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&family=Noto+Naskh+Arabic:wght@400;600;700&family=Poppins:wght@400;500;600&family=Roboto:wght@400;500;700&family=Scheherazade+New:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
     <!-- Ensure CSS uses base path /public/assets/css/style.css because of routing -->
     <link rel="stylesheet" href="/assets/css/style.css">
     <script>
@@ -75,6 +76,7 @@
         <?php echo $content; ?>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
     <script src="/assets/js/app.js"></script>
 </body>
 </html>

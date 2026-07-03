@@ -9,7 +9,7 @@
     <?php if (empty($visits)): ?>
         <p style="color: var(--muted); text-align: center;">Belum ada data kunjungan.</p>
     <?php else: ?>
-        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+        <table id="tracker-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
             <thead>
                 <tr style="border-bottom: 2px solid var(--border); color: var(--text);">
                     <th style="padding: 10px;">No</th>

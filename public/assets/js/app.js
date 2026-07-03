@@ -168,9 +168,29 @@ document.addEventListener('DOMContentLoaded', () => {
             loadDashboardData();
             initDashboardForm();
             if(btnTrans) btnTrans.style.display = 'none';
+        } else if(path.includes('/tracker')) {
+            initTrackerTable();
+            if(btnTrans) btnTrans.style.display = 'none';
         } else if(path.includes('/login')) {
             initLoginForm();
             if(btnTrans) btnTrans.style.display = 'none';
+        }
+    }
+
+    function initTrackerTable() {
+        const table = document.getElementById('tracker-table');
+        if (table && typeof simpleDatatables !== 'undefined') {
+            new simpleDatatables.DataTable(table, {
+                searchable: true,
+                fixedHeight: true,
+                perPage: 25,
+                labels: {
+                    placeholder: "Cari data...",
+                    perPage: "entri per halaman",
+                    noRows: "Tidak ada data ditemukan",
+                    info: "Menampilkan {start} sampai {end} dari {rows} entri",
+                }
+            });
         }
     }
 
