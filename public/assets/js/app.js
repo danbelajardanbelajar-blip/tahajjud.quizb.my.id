@@ -178,17 +178,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function initTrackerTable() {
-        const table = document.getElementById('tracker-table');
-        if (table && typeof simpleDatatables !== 'undefined') {
-            new simpleDatatables.DataTable(table, {
-                searchable: true,
-                fixedHeight: true,
-                perPage: 25,
-                labels: {
-                    placeholder: "Cari data...",
-                    perPage: "entri per halaman",
-                    noRows: "Tidak ada data ditemukan",
-                    info: "Menampilkan {start} sampai {end} dari {rows} entri",
+        if (typeof $ !== 'undefined' && $.fn.DataTable) {
+            if ($.fn.DataTable.isDataTable('#tracker-table')) {
+                $('#tracker-table').DataTable().destroy();
+            }
+            $('#tracker-table').DataTable({
+                pageLength: 25,
+                language: {
+                    search: "Cari:",
+                    lengthMenu: "Tampilkan _MENU_ entri",
+                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                    infoEmpty: "Menampilkan 0 sampai 0 dari 0 entri",
+                    infoFiltered: "(disaring dari _MAX_ total entri)",
+                    zeroRecords: "Tidak ada data ditemukan",
+                    paginate: {
+                        first: "Pertama",
+                        last: "Terakhir",
+                        next: "Lanjut",
+                        previous: "Kembali"
+                    }
                 }
             });
         }
