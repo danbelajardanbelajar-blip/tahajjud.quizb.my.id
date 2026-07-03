@@ -17,6 +17,9 @@ spl_autoload_register(function ($class) {
     }
 });
 
+// Run Mini Firewall to block malicious bots before tracking
+\app\Core\Firewall::check();
+
 // Initialize Router
 $router = new \app\Core\Router();
 
