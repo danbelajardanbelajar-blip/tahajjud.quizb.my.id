@@ -32,5 +32,20 @@ class Tracker {
         $visits = array_slice($visits, 0, 1000);
 
         file_put_contents($dataFile, json_encode($visits, JSON_PRETTY_PRINT));
+        
+        // [REALTIME NOTIFIKASI] Tembak sinyal ke Tahajjud API secara asinkron
+        $notifyUrl = 'https://tahajjud.quizb.my.id/api_notify.php';
+        $postData = http_build_query([
+            'secret' => 'QUIZB_NOTIFY_SECRET_99',
+            'message' => 'Ada pengunjung baru di Web Tahajjud!'
+        ]);
+        
+        $ch = curl_init($notifyUrl);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($ch);
+        curl_close($ch);
     }
 }
