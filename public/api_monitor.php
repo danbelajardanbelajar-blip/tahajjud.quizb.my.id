@@ -21,8 +21,8 @@ $response = [
     'status' => 'success',
     'timestamp' => date('Y-m-d H:i:s'),
     'data' => [
-        'maktabah' => [],
-        'quizb' => [],
+        'maktabah' => null,
+        'quizb' => null,
         'wirid' => null,
         'tahajjud' => null
     ],
