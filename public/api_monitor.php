@@ -109,7 +109,9 @@ if (file_exists($tahajjudJsonPath)) {
     $tahajjudJson = file_get_contents($tahajjudJsonPath);
     $decoded = json_decode($tahajjudJson, true);
     if ($decoded !== null) {
-        $response['data']['tahajjud'] = $decoded;
+        $response['data']['tahajjud'] = [
+            'total_visits' => count($decoded)
+        ];
     } else {
         $response['errors'][] = "Failed to parse Tahajjud JSON";
     }
