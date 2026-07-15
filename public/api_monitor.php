@@ -65,7 +65,7 @@ if ($maktabahDb) {
 $quizbDb = getDbConnection('quic1934_upgrade');
 if ($quizbDb) {
     try {
-        $attemptCount = $quizbDb->query("SELECT COUNT(*) FROM attemps")->fetchColumn();
+        $attemptCount = $quizbDb->query("SELECT COUNT(*) FROM attempts")->fetchColumn();
         
         $response['data']['quizb'] = [
             'attempt_count' => $attemptCount
