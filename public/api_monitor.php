@@ -47,12 +47,19 @@ function getDbConnection($dbName) {
 $maktabahDb = getDbConnection('quic1934_maktabah');
 if ($maktabahDb) {
     try {
-        $searchCount = $maktabahDb->query("SELECT COUNT(*) FROM search_logs")->fetchColumn();
-        $downloadCount = $maktabahDb->query("SELECT COUNT(*) FROM download_logs")->fetchColumn();
+        $maktabahSearchLogs = $maktabahDb->query("SELECT COUNT(*) FROM search_logs")->fetchColumn();
+        $maktabahDownloadLogs = $maktabahDb->query("SELECT COUNT(*) FROM download_logs")->fetchColumn();
         
+        $recentMaktabah = $maktabahDb->query("SELECT query, created_at FROM search_logs ORDER BY id DESC LIMIT 4")->fetchAll(PDO::FETCH_ASSOC);
+        $recentMaktabahFmt = [];
+        foreach ($recentMaktabah as $r) {
+            $recentMaktabahFmt[] = ['title' => $r['query'], 'subtitle' => $r['created_at']];
+        }
+
         $response['data']['maktabah'] = [
-            'search_count' => $searchCount,
-            'download_count' => $downloadCount
+            'search_count' => $maktabahSearchLogs,
+            'download_count' => $maktabahDownloadLogs,
+            'recent_records' => $recentMaktabahFmt
         ];
     } catch (Exception $e) {
         $response['errors'][] = "Maktabah query failed: " . $e->getMessage();
@@ -67,8 +74,15 @@ if ($quizbDb) {
     try {
         $attemptCount = $quizbDb->query("SELECT COUNT(*) FROM attempts")->fetchColumn();
         
+        $recentQuizB = $quizbDb->query("SELECT score, completed_at FROM attempts ORDER BY id DESC LIMIT 4")->fetchAll(PDO::FETCH_ASSOC);
+        $recentQuizBFmt = [];
+        foreach ($recentQuizB as $r) {
+            $recentQuizBFmt[] = ['title' => 'Score: ' . $r['score'], 'subtitle' => $r['completed_at']];
+        }
+
         $response['data']['quizb'] = [
-            'attempt_count' => $attemptCount
+            'attempt_count' => $attemptCount,
+            'recent_records' => $recentQuizBFmt
         ];
     } catch (Exception $e) {
         $response['errors'][] = "QuizB query failed: " . $e->getMessage();
@@ -91,10 +105,19 @@ function fetchJsonHttp($url) {
 
 $wiridJson = fetchJsonHttp('https://wirid.quizb.my.id/analytics.json');
 if ($wiridJson) {
-    $decoded = json_decode($wiridJson, true);
-    if ($decoded !== null) {
+    $wiridDecoded = json_decode($wiridJson, true);
+    if ($wiridDecoded !== null) {
+        $recentWirid = array_slice($wiridDecoded, -4);
+        $recentWiridFmt = [];
+        foreach (array_reverse($recentWirid) as $r) {
+            $title = $r['item_title'] ?? 'Unknown';
+            $time = $r['timestamp'] ?? '';
+            $recentWiridFmt[] = ['title' => $title, 'subtitle' => $time];
+        }
+
         $response['data']['wirid'] = [
-            'total_events' => count($decoded)
+            'total_events' => count($wiridDecoded),
+            'recent_records' => $recentWiridFmt
         ];
     } else {
         $response['errors'][] = "Failed to parse Wirid JSON";
@@ -109,8 +132,17 @@ if (file_exists($tahajjudJsonPath)) {
     $tahajjudJson = file_get_contents($tahajjudJsonPath);
     $decoded = json_decode($tahajjudJson, true);
     if ($decoded !== null) {
+        $recentTahajjud = array_slice($decoded, -4);
+        $recentTahajjudFmt = [];
+        foreach (array_reverse($recentTahajjud) as $r) {
+            $title = $r['uri'] ?? 'Unknown';
+            $time = $r['timestamp'] ?? '';
+            $recentTahajjudFmt[] = ['title' => $title, 'subtitle' => $time];
+        }
+
         $response['data']['tahajjud'] = [
-            'total_visits' => count($decoded)
+            'total_visits' => count($decoded),
+            'recent_records' => $recentTahajjudFmt
         ];
     } else {
         $response['errors'][] = "Failed to parse Tahajjud JSON";
