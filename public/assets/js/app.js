@@ -220,11 +220,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let html = '';
             data.forEach(item => {
+                const rep = item.repetitions || 3;
                 html += `
                 <div class="doa" onclick="this.classList.toggle('active')">
                     <div class="arab">${item.arab}</div>
                     ${item.terjemah ? `<div class="terjemah">${item.terjemah}</div>` : ''}
-                    <div class="doa-note">dibaca 3x</div>
+                    <div class="doa-note">dibaca ${rep}x</div>
                 </div>`;
             });
             list.innerHTML = html;
@@ -278,10 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let html = '';
         pageData.forEach((item, index) => {
             const globalIndex = startIndex + index;
+            const rep = item.repetitions || 3;
             html += `
             <div class="doa-item">
                 <div class="doa-content">
-                    <div class="doa-id">#Doa Ke-${globalIndex + 1}</div>
+                    <div class="doa-id">#Doa Ke-${globalIndex + 1} <span style="font-size:12px; font-weight:normal; color:var(--muted);">(Dibaca ${rep}x)</span></div>
                     <div class="doa-arab">${item.arab}</div>
                     <div class="doa-trans">${item.terjemah}</div>
                 </div>
@@ -348,6 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnCancel.onclick = () => {
             form.reset();
             document.getElementById('doa-id').value = '';
+            if(document.getElementById('doa-repetitions')) document.getElementById('doa-repetitions').value = '3';
             document.getElementById('form-title').textContent = '✨ Tambah Doa Baru';
             btnCancel.style.display = 'none';
         };
@@ -361,7 +364,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const payload = {
                 id: document.getElementById('doa-id').value,
                 arab: document.getElementById('doa-arab').value,
-                terjemah: document.getElementById('doa-terjemah').value
+                terjemah: document.getElementById('doa-terjemah').value,
+                repetitions: parseInt(document.getElementById('doa-repetitions').value) || 3
             };
 
             try {
@@ -398,6 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('doa-id').value = item.id;
         document.getElementById('doa-arab').value = item.arab;
         document.getElementById('doa-terjemah').value = item.terjemah;
+        if(document.getElementById('doa-repetitions')) document.getElementById('doa-repetitions').value = item.repetitions || 3;
         document.getElementById('form-title').textContent = '📝 Edit Doa';
         document.getElementById('btn-cancel-edit').style.display = 'inline-block';
         window.scrollTo(0, 0);

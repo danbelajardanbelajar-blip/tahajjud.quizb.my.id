@@ -20,6 +20,11 @@
             <textarea name="terjemah" id="doa-terjemah" rows="3" required placeholder="Masukkan arti dalam bahasa indonesia..."></textarea>
         </div>
         
+        <div class="form-group">
+            <label>Pengulangan Dibaca (Repetitions)</label>
+            <input type="number" name="repetitions" id="doa-repetitions" min="1" value="3" class="form-control" required style="width:100px;">
+        </div>
+        
         <button type="submit" class="btn btn-success">💾 Simpan Data</button>
         <button type="button" class="btn btn-secondary" id="btn-cancel-edit" style="display:none;">Batal</button>
         <span id="form-message" style="margin-left: 10px; font-size: 14px;"></span>
