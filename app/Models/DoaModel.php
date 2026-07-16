@@ -26,7 +26,7 @@ class DoaModel {
         return null;
     }
 
-    public function save($arab, $terjemah, $id = null) {
+    public function save($arab, $terjemah, $repetitions = 3, $id = null) {
         // Validation: Ensure UTF-8
         if (!mb_check_encoding($arab, 'UTF-8') || !mb_check_encoding($terjemah, 'UTF-8')) {
             throw new \Exception("Invalid UTF-8 encoding");
@@ -38,6 +38,9 @@ class DoaModel {
         // Trim spaces
         $arab = trim($arab);
         $terjemah = trim($terjemah);
+        // Ensure repetitions is an integer
+        $repetitions = (int)$repetitions;
+        if ($repetitions < 1) $repetitions = 3;
 
         if (empty($arab)) {
             throw new \Exception("Teks Arab tidak boleh kosong atau invalid.");
@@ -56,6 +59,7 @@ class DoaModel {
                     if ($item['id'] === $id) {
                         $item['arab'] = $arab;
                         $item['terjemah'] = $terjemah;
+                        $item['repetitions'] = $repetitions;
                         $found = true;
                         break;
                     }
@@ -71,7 +75,8 @@ class DoaModel {
                 $data[] = [
                     'id' => $id,
                     'arab' => $arab,
-                    'terjemah' => $terjemah
+                    'terjemah' => $terjemah,
+                    'repetitions' => $repetitions
                 ];
             }
 
@@ -86,7 +91,7 @@ class DoaModel {
             flock($fp, LOCK_UN);
             fclose($fp);
 
-            return ['id' => $id, 'arab' => $arab, 'terjemah' => $terjemah];
+            return ['id' => $id, 'arab' => $arab, 'terjemah' => $terjemah, 'repetitions' => $repetitions];
         } else {
             fclose($fp);
             throw new \Exception("Gagal mengunci file database. Silakan coba lagi.");

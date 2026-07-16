@@ -50,9 +50,10 @@ class ApiController extends Controller {
         $id = $input['id'] ?? null;
         $arab = $input['arab'] ?? '';
         $terjemah = $input['terjemah'] ?? '';
+        $repetitions = $input['repetitions'] ?? 3;
 
         try {
-            $result = $this->model->save($arab, $terjemah, $id);
+            $result = $this->model->save($arab, $terjemah, $repetitions, $id);
             $this->json(['success' => true, 'data' => $result]);
         } catch (\Exception $e) {
             $this->json(['success' => false, 'error' => $e->getMessage()], 400);
