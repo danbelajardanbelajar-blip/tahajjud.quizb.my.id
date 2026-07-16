@@ -4,6 +4,10 @@
 // Token rahasia agar tidak ada orang luar yang bisa spam notifikasi
 $secretToken = 'QUIZB_NOTIFY_SECRET_99';
 
+// Sangat Penting: Biarkan script tetap jalan di background meskipun Maktabah/QuizB 
+// sudah memutus koneksi (karena timeout 1 atau 3 detik).
+ignore_user_abort(true);
+
 // Menerima input JSON atau form URL encoded
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $secret = $_POST['secret'] ?? '';
