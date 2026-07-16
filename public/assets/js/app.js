@@ -224,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="doa" onclick="this.classList.toggle('active')">
                     <div class="arab">${item.arab}</div>
                     ${item.terjemah ? `<div class="terjemah">${item.terjemah}</div>` : ''}
+                    <div class="doa-note">dibaca 3x</div>
                 </div>`;
             });
             list.innerHTML = html;
