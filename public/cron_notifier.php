@@ -38,17 +38,17 @@ $messages = [];
 
 if (isset($lastState['maktabah_search']) && $currentState['maktabah_search'] > $lastState['maktabah_search']) {
     $diff = $currentState['maktabah_search'] - $lastState['maktabah_search'];
-    $messages[] = "Ada $diff pencarian Maktabah baru.";
+    // $messages[] = "Ada $diff pencarian Maktabah baru."; // Dimatikan karena sudah realtime via api_notify.php
 }
 
 if (isset($lastState['quizb_attempts']) && $currentState['quizb_attempts'] > $lastState['quizb_attempts']) {
     $diff = $currentState['quizb_attempts'] - $lastState['quizb_attempts'];
-    $messages[] = "Ada $diff pengerjaan QuizB baru.";
+    // $messages[] = "Ada $diff pengerjaan QuizB baru."; // Dimatikan karena sudah realtime via api_notify.php
 }
 
 if (isset($lastState['wirid_events']) && $currentState['wirid_events'] > $lastState['wirid_events']) {
     $diff = $currentState['wirid_events'] - $lastState['wirid_events'];
-    $messages[] = "Ada $diff entri Wirid baru.";
+    // $messages[] = "Ada $diff entri Wirid baru."; // Dimatikan karena sudah realtime via api_notify.php
 }
 
 // Update last state
