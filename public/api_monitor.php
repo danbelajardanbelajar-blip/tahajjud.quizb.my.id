@@ -50,10 +50,16 @@ if ($maktabahDb) {
         $maktabahSearchLogs = $maktabahDb->query("SELECT COUNT(*) FROM search_logs")->fetchColumn();
         $maktabahDownloadLogs = $maktabahDb->query("SELECT COUNT(*) FROM download_logs")->fetchColumn();
         
-        $recentMaktabah = $maktabahDb->query("SELECT query, created_at FROM search_logs ORDER BY id DESC LIMIT 4")->fetchAll(PDO::FETCH_ASSOC);
+        $recentMaktabah = $maktabahDb->query("
+            (SELECT CONCAT('Search: ', query) AS activity, created_at FROM search_logs)
+            UNION ALL
+            (SELECT CONCAT('Download: ', book_title) AS activity, created_at FROM download_logs)
+            ORDER BY created_at DESC LIMIT 4
+        ")->fetchAll(PDO::FETCH_ASSOC);
+        
         $recentMaktabahFmt = [];
         foreach ($recentMaktabah as $r) {
-            $recentMaktabahFmt[] = ['title' => $r['query'], 'subtitle' => $r['created_at']];
+            $recentMaktabahFmt[] = ['title' => $r['activity'], 'subtitle' => $r['created_at']];
         }
 
         $response['data']['maktabah'] = [
