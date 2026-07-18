@@ -50,6 +50,10 @@ if ($maktabahDb) {
         $maktabahSearchLogs = $maktabahDb->query("SELECT COUNT(*) FROM search_logs")->fetchColumn();
         $maktabahDownloadLogs = $maktabahDb->query("SELECT COUNT(*) FROM download_logs")->fetchColumn();
         
+        $maktabahTodaySearch = $maktabahDb->query("SELECT COUNT(*) FROM search_logs WHERE DATE(created_at) = CURDATE()")->fetchColumn();
+        $maktabahTodayDownload = $maktabahDb->query("SELECT COUNT(*) FROM download_logs WHERE DATE(created_at) = CURDATE()")->fetchColumn();
+        $todayMaktabah = (int)$maktabahTodaySearch + (int)$maktabahTodayDownload;
+        
         $recentMaktabah = $maktabahDb->query("
             (SELECT CONCAT('Search: ', query) AS activity, created_at FROM search_logs)
             UNION ALL
@@ -65,6 +69,7 @@ if ($maktabahDb) {
         $response['data']['maktabah'] = [
             'search_count' => $maktabahSearchLogs,
             'download_count' => $maktabahDownloadLogs,
+            'today_activity' => $todayMaktabah,
             'recent_records' => $recentMaktabahFmt
         ];
     } catch (Exception $e) {
@@ -79,6 +84,7 @@ $quizbDb = getDbConnection('quic1934_upgrade');
 if ($quizbDb) {
     try {
         $attemptCount = $quizbDb->query("SELECT COUNT(*) FROM attempts")->fetchColumn();
+        $todayQuizB = $quizbDb->query("SELECT COUNT(*) FROM attempts WHERE DATE(completed_at) = CURDATE()")->fetchColumn();
         
         $recentQuizB = $quizbDb->query("
             SELECT a.score, a.completed_at, q.title as quiz_title, u.name as user_name
@@ -96,6 +102,7 @@ if ($quizbDb) {
 
         $response['data']['quizb'] = [
             'attempt_count' => $attemptCount,
+            'today_activity' => (int)$todayQuizB,
             'recent_records' => $recentQuizBFmt
         ];
     } catch (Exception $e) {
@@ -121,6 +128,14 @@ $wiridJson = fetchJsonHttp('https://wirid.quizb.my.id/analytics.json');
 if ($wiridJson) {
     $wiridDecoded = json_decode($wiridJson, true);
     if ($wiridDecoded !== null) {
+        $todayStr = date('Y-m-d');
+        $todayWirid = 0;
+        foreach ($wiridDecoded as $r) {
+            if (strpos($r['timestamp'] ?? '', $todayStr) === 0) {
+                $todayWirid++;
+            }
+        }
+        
         $recentWirid = array_slice($wiridDecoded, -4);
         $recentWiridFmt = [];
         foreach (array_reverse($recentWirid) as $r) {
@@ -131,6 +146,7 @@ if ($wiridJson) {
 
         $response['data']['wirid'] = [
             'total_events' => count($wiridDecoded),
+            'today_activity' => $todayWirid,
             'recent_records' => $recentWiridFmt
         ];
     } else {
@@ -146,6 +162,14 @@ if (file_exists($tahajjudJsonPath)) {
     $tahajjudJson = file_get_contents($tahajjudJsonPath);
     $decoded = json_decode($tahajjudJson, true);
     if ($decoded !== null) {
+        $todayStr = date('Y-m-d');
+        $todayTahajjud = 0;
+        foreach ($decoded as $r) {
+            if (strpos($r['timestamp'] ?? '', $todayStr) === 0) {
+                $todayTahajjud++;
+            }
+        }
+        
         $recentTahajjud = array_slice($decoded, -4);
         $recentTahajjudFmt = [];
         foreach (array_reverse($recentTahajjud) as $r) {
@@ -166,6 +190,7 @@ if (file_exists($tahajjudJsonPath)) {
 
         $response['data']['tahajjud'] = [
             'total_visits' => count($decoded),
+            'today_activity' => $todayTahajjud,
             'recent_records' => $recentTahajjudFmt
         ];
     } else {
