@@ -149,7 +149,17 @@ if (file_exists($tahajjudJsonPath)) {
         $recentTahajjud = array_slice($decoded, -4);
         $recentTahajjudFmt = [];
         foreach (array_reverse($recentTahajjud) as $r) {
-            $title = $r['uri'] ?? 'Unknown';
+            $uri = $r['uri'] ?? 'Unknown';
+            
+            $friendlyName = 'Beranda';
+            if ($uri !== '/' && $uri !== '' && $uri !== 'Unknown') {
+                $cleanUri = trim($uri, '/');
+                $friendlyName = ucwords(str_replace(['-', '_', '/'], ' ', $cleanUri));
+            } elseif ($uri === 'Unknown') {
+                $friendlyName = 'Unknown';
+            }
+            
+            $title = "Halaman: " . $friendlyName;
             $time = $r['timestamp'] ?? '';
             $recentTahajjudFmt[] = ['title' => $title, 'subtitle' => $time];
         }
