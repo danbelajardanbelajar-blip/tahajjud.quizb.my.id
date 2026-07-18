@@ -74,10 +74,11 @@ if ($quizbDb) {
     try {
         $attemptCount = $quizbDb->query("SELECT COUNT(*) FROM attempts")->fetchColumn();
         
-        $recentQuizB = $quizbDb->query("SELECT score, completed_at FROM attempts ORDER BY id DESC LIMIT 4")->fetchAll(PDO::FETCH_ASSOC);
+        $recentQuizB = $quizbDb->query("SELECT a.score, a.completed_at, q.title as quiz_title FROM attempts a LEFT JOIN quizzes q ON a.quiz_id = q.id ORDER BY a.id DESC LIMIT 4")->fetchAll(PDO::FETCH_ASSOC);
         $recentQuizBFmt = [];
         foreach ($recentQuizB as $r) {
-            $recentQuizBFmt[] = ['title' => 'Score: ' . $r['score'], 'subtitle' => $r['completed_at']];
+            $qTitle = $r['quiz_title'] ?? 'QuizB';
+            $recentQuizBFmt[] = ['title' => $qTitle . ' - Skor: ' . $r['score'], 'subtitle' => $r['completed_at']];
         }
 
         $response['data']['quizb'] = [
