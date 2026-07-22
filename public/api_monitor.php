@@ -49,26 +49,31 @@ if ($maktabahDb) {
     try {
         $maktabahSearchLogs = $maktabahDb->query("SELECT COUNT(*) FROM search_logs")->fetchColumn();
         $maktabahDownloadLogs = $maktabahDb->query("SELECT COUNT(*) FROM download_logs")->fetchColumn();
+        $maktabahAskLogs = $maktabahDb->query("SELECT COUNT(*) FROM ask_logs")->fetchColumn();
         
         $maktabahTodaySearch = $maktabahDb->query("SELECT COUNT(*) FROM search_logs WHERE DATE(created_at) = CURDATE()")->fetchColumn();
         $maktabahTodayDownload = $maktabahDb->query("SELECT COUNT(*) FROM download_logs WHERE DATE(created_at) = CURDATE()")->fetchColumn();
-        $todayMaktabah = (int)$maktabahTodaySearch + (int)$maktabahTodayDownload;
+        $maktabahTodayAsk = $maktabahDb->query("SELECT COUNT(*) FROM ask_logs WHERE DATE(created_at) = CURDATE()")->fetchColumn();
+        $todayMaktabah = (int)$maktabahTodaySearch + (int)$maktabahTodayDownload + (int)$maktabahTodayAsk;
         
         $recentMaktabah = $maktabahDb->query("
             (SELECT CONCAT('Search: ', query) AS activity, created_at FROM search_logs)
             UNION ALL
             (SELECT CONCAT('Download: ', book_title) AS activity, created_at FROM download_logs)
+            UNION ALL
+            (SELECT CONCAT('Tanya AI: ', question) AS activity, created_at FROM ask_logs)
             ORDER BY created_at DESC LIMIT 4
         ")->fetchAll(PDO::FETCH_ASSOC);
         
         $recentMaktabahFmt = [];
         foreach ($recentMaktabah as $r) {
-            $recentMaktabahFmt[] = ['title' => $r['activity'], 'subtitle' => $r['created_at']];
+            $recentMaktabahFmt[] = ['title' => mb_substr($r['activity'], 0, 80), 'subtitle' => $r['created_at']];
         }
 
         $response['data']['maktabah'] = [
             'search_count' => $maktabahSearchLogs,
             'download_count' => $maktabahDownloadLogs,
+            'ask_count' => $maktabahAskLogs,
             'today_activity' => $todayMaktabah,
             'recent_records' => $recentMaktabahFmt
         ];
